@@ -19,3 +19,7 @@ add_executable(solve
 add_executable(greedy
     src/greedy.cpp
 )
+
+add_executable(score
+    src/score.cpp
+)
