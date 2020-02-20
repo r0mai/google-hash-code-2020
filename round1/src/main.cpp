@@ -2,16 +2,16 @@
 #include <iostream>
 
 
-struct InDataSection {
-	int T;
-	int M;
-	std::vector<int> ids;
+struct Library {
+	int signup_days;
+	int books_per_day;
+	std::vector<int> books;
 };
 
 struct InData {
-	int D;
-	std::vector<int> S;
-	std::vector<InDataSection> L;
+	int days;
+	std::vector<int> book_scores;
+	std::vector<Library> libraries;
 };
 
 
@@ -38,7 +38,7 @@ InData parse(std::istream& stream) {
 	}
 
 
-	data.L.resize(L);
+	data.libraries.resize(L);
 
 	// sections
 	for (auto i = 0; i < L; ++i) {
@@ -50,14 +50,13 @@ InData parse(std::istream& stream) {
 			stream >> item;
 		}
 
-		data.L[i].T = T;
-		data.L[i].M = M;
-		data.L[i].ids = std::move(ids);
-
+		data.libraries[i].signup_days = T;
+		data.libraries[i].books_per_day = M;
+		data.libraries[i].books = std::move(ids);
 	}
 
-	data.D = D;
-	data.S = std::move(S);
+	data.days = D;
+	data.book_scores = std::move(S);
 	return data;
 }
 
