@@ -11,6 +11,8 @@ BINARY=""
 
 echo "Using binary: ${BINARY}"
 
+mkdir -p output
+
 for f in input/*.txt; do
     echo "----- Checking ${f} -----"
 
