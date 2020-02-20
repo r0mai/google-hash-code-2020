@@ -62,6 +62,10 @@ struct Greedy {
 		int days_left = in.days - start_day - library.signup_days;
 		int scannable_books = days_left * library.books_per_day;
 
+		if (days_left <= 0) {
+			return {};
+		}
+
 		std::vector<int> books;
 		books.reserve(scannable_books);
 
@@ -94,7 +98,7 @@ struct Greedy {
 		OutData out;
 		int day = 0;
 		while (true) {
-			float max_score = 0;
+			float max_score = std::numeric_limits<float>::lowest();
 			int max_idx = -1;
 			for (int i = 0; i < in.libraries.size(); ++i) {
 				if (libraries_signed[i]) {
@@ -108,7 +112,7 @@ struct Greedy {
 			}
 
 			// nothing more to scan
-			if (max_idx <= 0) {
+			if (max_idx < 0) {
 				break;
 			}
 
