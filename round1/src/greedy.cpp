@@ -1,9 +1,13 @@
 #include <algorithm>
 #include <iostream>
 #include <random>
+#include <string>
 #include <vector>
 
 #include "parse.hpp"
+
+double fs = 2.0f;
+double lambda = 1.0f;
 
 struct Greedy {
 	Greedy(InData in) : in(std::move(in)) {}
@@ -56,8 +60,7 @@ struct Greedy {
 		int days_left = in.days - start_day;
 		int setup_time = library.signup_days;
 
-		double power = 8.0f;
-		return book_score * (std::pow(double(days_left - setup_time), power) / double(days_left));
+		return book_score * (std::pow(double(days_left - lambda * setup_time), fs) / double(days_left));
 	}
 
 	std::vector<int> ScanFromLibrary(int library_idx, int start_day) {
@@ -138,6 +141,13 @@ struct Greedy {
 };
 
 
-int main() {
+int main(int argc, char** argv) {
+	if (argc >= 2) {
+		fs = std::stod(argv[1]);
+	}
+	if (argc >= 3) {
+		lambda = std::stod(argv[2]);
+	}
+
 	print(std::cout, Greedy{parse(std::cin)}.Solve());
 }
