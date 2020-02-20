@@ -26,11 +26,18 @@ TESTS=(
     input/f_libraries_of_the_world.txt
 )
 
+SCORE_SUM="0"
+
 for f in "${TESTS[@]}"
 do
     echo "----- Checking ${f} -----"
 
     "${BINARY}" < "${f}" > "output/$(basename ${f})"
     echo -n "  Score: "
-    cat "output/$(basename ${f})" | "${SCORE}" "${f}" | tail -n 1 | cut -d ' ' -f 2
+    SUB_SCORE=$(cat "output/$(basename ${f})" | "${SCORE}" "${f}" | tail -n 1 | cut -d ' ' -f 2)
+    echo "${SUB_SCORE}"
+
+    SCORE_SUM=$(( SCORE_SUM + SUB_SCORE ))
 done
+
+echo "Total score: ${SCORE_SUM}"
