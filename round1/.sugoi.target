@@ -1,0 +1,12 @@
+{
+  "current": {
+    "flags": [
+      "ccache"
+    ],
+    "platform": "osx",
+    "arch": "x64",
+    "build_type": "debug",
+    "build_tool": "ninja"
+  },
+  "previous": {}
+}
