@@ -2,21 +2,21 @@
 #include <iostream>
 
 
-struct Data2 {
+struct InDataSection {
 	int t;
 	int m;
 	std::vector<int> ids;
 };
 
-struct Data {
+struct InData {
 	int D;
 	std::vector<int> S;
-	std::vector<Data2> L;
+	std::vector<InDataSection> L;
 };
 
 
-Data parse(std::istream& stream) {
-	Data data;
+InData parse(std::istream& stream) {
+	InData data;
 	int B, L, D;
 
 	stream >> B >> L >> D;
@@ -50,6 +50,9 @@ Data parse(std::istream& stream) {
 	data.S = std::move(S);
 	return data;
 }
+
+
+
 
 
 
