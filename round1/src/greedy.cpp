@@ -50,6 +50,9 @@ struct Greedy {
 		auto& library = in.libraries[library_idx];
 
 		int book_score = BookScoreLibrary(library_idx, start_day);
+		if (book_score == 0) {
+			return std::numeric_limits<float>::lowest();
+		}
 		int days_left = in.days - start_day;
 		int setup_time = library.signup_days;
 
