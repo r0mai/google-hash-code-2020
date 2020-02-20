@@ -6,7 +6,7 @@
 
 #include "parse.hpp"
 
-double fs = 2.0f;
+double power = 2.0f;
 double lambda = 1.0f;
 
 struct Greedy {
@@ -60,7 +60,7 @@ struct Greedy {
 		int days_left = in.days - start_day;
 		int setup_time = library.signup_days;
 
-		return book_score * (std::pow(double(days_left - lambda * setup_time), fs) / double(days_left));
+		return book_score * (std::pow(double(days_left - lambda * setup_time), power) / double(days_left));
 	}
 
 	std::vector<int> ScanFromLibrary(int library_idx, int start_day) {
@@ -143,7 +143,7 @@ struct Greedy {
 
 int main(int argc, char** argv) {
 	if (argc >= 2) {
-		fs = std::stod(argv[1]);
+		power = std::stod(argv[1]);
 	}
 	if (argc >= 3) {
 		lambda = std::stod(argv[2]);
