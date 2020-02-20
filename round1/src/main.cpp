@@ -2,7 +2,7 @@
 #include <iostream>
 
 
-struct Library {
+struct InLibrary {
 	int signup_days;
 	int books_per_day;
 	std::vector<int> books;
@@ -11,17 +11,17 @@ struct Library {
 struct InData {
 	int days;
 	std::vector<int> book_scores;
-	std::vector<Library> libraries;
+	std::vector<InLibrary> libraries;
 };
 
 
-struct OutDataSection {
-	int Y;
-	std::vector<int> K;
+struct OutLibrary {
+	int library_idx;
+	std::vector<int> books;
 };
 
 struct OutData {
-	std::vector<OutDataSection> A;
+	std::vector<OutLibrary> libraries;
 };
 
 
@@ -61,11 +61,11 @@ InData parse(std::istream& stream) {
 }
 
 void print(std::ostream& stream, const OutData& data) {
-	stream << data.A.size() << std::endl;
-	for (auto& item : data.A) {
-		stream << item.Y << " " << item.K.size() << std::endl;
+	stream << data.libraries.size() << std::endl;
+	for (auto& item : data.libraries) {
+		stream << item.library_idx << " " << item.books.size() << std::endl;
 		bool first = true;
-		for (auto& k : item.K) {
+		for (auto& k : item.books) {
 			if (first) {
 				first = false;
 			} else {
