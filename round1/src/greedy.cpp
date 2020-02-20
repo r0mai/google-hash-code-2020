@@ -56,7 +56,8 @@ struct Greedy {
 		int days_left = in.days - start_day;
 		int setup_time = library.signup_days;
 
-		return book_score * float(days_left - setup_time) * float(days_left - setup_time) / float(days_left);
+		double power = 8.0f;
+		return book_score * (std::pow(double(days_left - setup_time), power) / double(days_left));
 	}
 
 	std::vector<int> ScanFromLibrary(int library_idx, int start_day) {
