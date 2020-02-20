@@ -27,7 +27,7 @@ struct Greedy {
 		return library.signup_days + non_scanned_book_count / library.books_per_day;
 	}
 
-	int ScoreLibrary(int library_idx, int start_day) {
+	int BookScoreLibrary(int library_idx, int start_day) {
 		auto& library = in.libraries[library_idx];
 
 		int days_left = in.days - start_day - library.signup_days;
@@ -44,6 +44,16 @@ struct Greedy {
 			}
 		}
 		return score;
+	}
+
+	float SmartScoreLibrary(int library_idx, int start_day) {
+		auto& library = in.libraries[library_idx];
+
+		int book_score = BookScoreLibrary(library_idx, start_day);
+		int days_left = in.days - start_day;
+		int setup_time = library.signup_days;
+
+		return book_score * float(days_left - setup_time) / float(days_left);
 	}
 
 	std::vector<int> ScanFromLibrary(int library_idx, int start_day) {
@@ -84,13 +94,13 @@ struct Greedy {
 		OutData out;
 		int day = 0;
 		while (true) {
-			int max_score = 0;
+			float max_score = 0;
 			int max_idx = -1;
 			for (int i = 0; i < in.libraries.size(); ++i) {
 				if (libraries_signed[i]) {
 					continue;
 				}
-				int score = ScoreLibrary(i, day);
+				auto score = SmartScoreLibrary(i, day);
 				if (score > max_score) {
 					max_score = score;
 					max_idx = i;
@@ -98,11 +108,9 @@ struct Greedy {
 			}
 
 			// nothing more to scan
-			if (max_score <= 0) {
+			if (max_idx <= 0) {
 				break;
 			}
-
-
 
 			OutLibrary out_lib;
 			out_lib.library_idx = max_idx;
