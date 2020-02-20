@@ -17,7 +17,17 @@ echo "Using binary: ${BINARY} and ${SCORE}"
 
 mkdir -p output
 
-for f in input/*.txt; do
+TESTS=(
+    input/a_example.txt
+    input/b_read_on.txt
+    input/c_incunabula.txt
+    input/d_tough_choices.txt
+    input/e_so_many_books.txt
+    input/f_libraries_of_the_world.txt
+)
+
+for f in "${TESTS[@]}"
+do
     echo "----- Checking ${f} -----"
 
     "${BINARY}" < "${f}" > "output/$(basename ${f})"
