@@ -75,3 +75,4 @@ do
 done
 
 echo "Total score: ${SCORE_SUM}"
+zip output/round1.zip $(git ls-files)
