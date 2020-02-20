@@ -1,0 +1,126 @@
+#include <iostream>
+#include <random>
+#include <vector>
+
+#include "parse.hpp"
+
+struct Greedy {
+	Greedy(InData in) : in(std::move(in)) {}
+
+	InData in;
+
+	std::vector<bool> books_scanned;
+	std::vector<bool> libraries_signed;
+	std::vector<int> library_scores;
+
+	int DaysToScanEverything(int library_idx) {
+		auto& library = in.libraries[library_idx];
+
+		int non_scanned_book_count = 0;
+		for (int book : library.books) {
+			if (!books_scanned[book]) {
+				non_scanned_book_count++;
+			}
+		}
+		// TODO round up
+		return library.signup_days + non_scanned_book_count / library.books_per_day;
+	}
+
+	int ScoreLibrary(int library_idx, int start_day) {
+		auto& library = in.libraries[library_idx];
+
+		int days_left = in.days - start_day - library.signup_days;
+		int scannable_books = days_left * library.books_per_day;
+
+		int score = 0;
+		for (int book : library.books) {
+			if (scannable_books <= 0) {
+				break;
+			}
+			if (!books_scanned[book]) {
+				score += in.book_scores[book];
+				--scannable_books;
+			}
+		}
+		return score;
+	}
+
+	std::vector<int> ScanFromLibrary(int library_idx, int start_day) {
+		auto& library = in.libraries[library_idx];
+
+		int days_left = in.days - start_day - library.signup_days;
+		int scannable_books = days_left * library.books_per_day;
+
+		std::vector<int> books;
+		books.reserve(scannable_books);
+
+		for (int book : library.books) {
+			if (scannable_books <= 0) {
+				break;
+			}
+			if (!books_scanned[book]) {
+				books.push_back(book);
+				--scannable_books;
+			}
+		}
+		return books;
+	}
+
+	OutData Solve() {
+		books_scanned.resize(in.book_scores.size());
+		library_scores.resize(in.libraries.size());
+		libraries_signed.resize(in.libraries.size());
+
+		// sort books in desceding order of score
+		for (auto& library : in.libraries) {
+			std::sort(library.books.begin(), library.books.end(),
+				[this](int lhs, int rhs) {
+					return in.book_scores[lhs] > in.book_scores[rhs];
+				}
+			);
+		}
+
+		OutData out;
+		int day = 0;
+		while (true) {
+			int max_score = 0;
+			int max_idx = -1;
+			for (int i = 0; i < in.libraries.size(); ++i) {
+				if (libraries_signed[i]) {
+					continue;
+				}
+				int score = ScoreLibrary(i, day);
+				if (score > max_score) {
+					max_score = score;
+					max_idx = i;
+				}
+			}
+
+			// nothing more to scan
+			if (max_score <= 0) {
+				break;
+			}
+
+
+
+			OutLibrary out_lib;
+			out_lib.library_idx = max_idx;
+			out_lib.books = ScanFromLibrary(max_idx, day);
+			out.libraries.push_back(std::move(out_lib));
+
+			auto& best_library = in.libraries[max_idx];
+			day += best_library.signup_days;
+			libraries_signed[max_idx] = true;
+			// out of time
+			if (day >= in.days) {
+				break;
+			}
+		}
+		return out;
+	}
+};
+
+
+int main() {
+	print(std::cout, Greedy{parse(std::cin)}.Solve());
+}
