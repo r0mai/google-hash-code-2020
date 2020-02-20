@@ -18,6 +18,15 @@ echo "Using binary: ${BINARY} and ${SCORE}"
 mkdir -p output
 
 TESTS=(
+    # input/a_example.txt
+    # input/b_read_on.txt
+    # input/c_incunabula.txt
+    # input/d_tough_choices.txt
+    input/e_so_many_books.txt
+    # input/f_libraries_of_the_world.txt
+)
+
+TESTS=(
     input/a_example.txt
     input/b_read_on.txt
     input/c_incunabula.txt
@@ -29,6 +38,7 @@ TESTS=(
 SCORE_SUM="0"
 
 POWER=(
+    # "1.0"
     # "2.0"
     # "3.0"
     # "4.0"
@@ -52,9 +62,12 @@ LAMBDA=(
     # "1.0"
     # "1.8"
     # "2.0"
-    "2.2"
-    # "3.0"
+    # "2.2"
+    "3.0"
     # "4.0"
+    # "5.0"
+    # "6.0"
+    # "7.0"
 )
 
 for f in "${TESTS[@]}"

@@ -9,6 +9,8 @@
 double power = 2.0f;
 double lambda = 1.0f;
 
+int wasted_days = 0;
+
 struct Greedy {
 	Greedy(InData in) : in(std::move(in)) {}
 
@@ -73,6 +75,10 @@ struct Greedy {
 			return {};
 		}
 
+		if (scannable_books > library.books.size()) {
+			wasted_days += (scannable_books - library.books.size()) / library.books_per_day;
+		}
+
 		std::vector<int> books;
 		books.reserve(scannable_books);
 
@@ -82,6 +88,7 @@ struct Greedy {
 			}
 			if (!books_scanned[book]) {
 				books.push_back(book);
+				books_scanned[book] = true;
 				--scannable_books;
 			}
 		}
@@ -150,4 +157,5 @@ int main(int argc, char** argv) {
 	}
 
 	print(std::cout, Greedy{parse(std::cin)}.Solve());
+	// std::cerr << "Wasted days = " << wasted_days << std::endl;
 }
