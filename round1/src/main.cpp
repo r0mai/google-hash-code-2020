@@ -3,8 +3,8 @@
 
 
 struct InDataSection {
-	int t;
-	int m;
+	int T;
+	int M;
 	std::vector<int> ids;
 };
 
@@ -12,6 +12,16 @@ struct InData {
 	int D;
 	std::vector<int> S;
 	std::vector<InDataSection> L;
+};
+
+
+struct OutDataSection {
+	int Y;
+	std::vector<int> K;
+};
+
+struct OutData {
+	std::vector<OutDataSection> A;
 };
 
 
@@ -32,16 +42,16 @@ InData parse(std::istream& stream) {
 
 	// sections
 	for (auto i = 0; i < L; ++i) {
-		int n, t, m;
-		stream >> n >> t >> m;
+		int N, T, M;
+		stream >> N >> T >> M;
 
-		std::vector<int> ids(n);
+		std::vector<int> ids(N);
 		for (auto& item : ids) {
 			stream >> item;
 		}
 
-		data.L[i].t = t;
-		data.L[i].m = m;
+		data.L[i].T = T;
+		data.L[i].M = M;
 		data.L[i].ids = std::move(ids);
 
 	}
@@ -51,9 +61,22 @@ InData parse(std::istream& stream) {
 	return data;
 }
 
-
-
-
+void print(std::ostream& stream, const OutData& data) {
+	stream << data.A.size() << std::endl;
+	for (auto& item : data.A) {
+		stream << item.Y << " " << item.K.size() << std::endl;
+		bool first = true;
+		for (auto& k : item.K) {
+			if (first) {
+				first = false;
+			} else {
+				stream << " ";
+			}
+			stream << k;
+		}
+		stream << std::endl;
+	}
+}
 
 
 int main() {
