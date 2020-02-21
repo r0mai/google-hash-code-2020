@@ -18,15 +18,15 @@ echo "Using binary: ${BINARY} and ${SCORE}"
 mkdir -p output
 
 TESTS=(
-    # input/a_example.txt
+    input/a_example.txt
     # input/b_read_on.txt
-    # input/c_incunabula.txt
+    input/c_incunabula.txt
     # input/d_tough_choices.txt
     input/e_so_many_books.txt
     # input/f_libraries_of_the_world.txt
 )
 
-TESTS=(
+TESTS2=(
     input/a_example.txt
     input/b_read_on.txt
     input/c_incunabula.txt
@@ -39,7 +39,7 @@ SCORE_SUM="0"
 
 POWER=(
     # "1.0"
-    # "2.0"
+    "2.0"
     # "3.0"
     # "4.0"
     # "5.0"
@@ -52,22 +52,29 @@ POWER=(
     # "12.0"
     # "13.0"
     # "14.0"
-    "15.0"
+    # "15.0"
     # "16.0"
     # "17.0"
 )
 
 LAMBDA=(
+    # "0.0"
     # "0.5"
-    # "1.0"
+    "1.0"
     # "1.8"
     # "2.0"
     # "2.2"
-    "3.0"
+    # "3.0"
     # "4.0"
     # "5.0"
     # "6.0"
     # "7.0"
+)
+
+KAPPA=(
+    0.0
+    # 1.0
+    10.0
 )
 
 for f in "${TESTS[@]}"
@@ -77,10 +84,13 @@ do
     do
         for lambda in "${LAMBDA[@]}"
         do
-            "${BINARY}" < "${f}" "${p}" "${lambda}" > "output/$(basename ${f})"
-            echo -n " ${f} ${p} ${lambda} Score: "
-            SUB_SCORE=$(cat "output/$(basename ${f})" | "${SCORE}" "${f}" | tail -n 1 | cut -d ' ' -f 2)
-            echo "${SUB_SCORE}"
+            for kappa in "${KAPPA[@]}"
+            do
+                "${BINARY}" < "${f}" "${p}" "${lambda}" "${kappa}" > "output/$(basename ${f})"
+                echo -n " ${f} ${p} ${lambda} ${kappa} Score: "
+                SUB_SCORE=$(cat "output/$(basename ${f})" | "${SCORE}" "${f}" | tail -n 1 | cut -d ' ' -f 2)
+                echo "${SUB_SCORE}"
+            done
         done
     done
 

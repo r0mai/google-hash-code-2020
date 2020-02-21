@@ -8,6 +8,7 @@
 
 double power = 2.0f;
 double lambda = 1.0f;
+double kappa = 1.0f;
 
 int wasted_days = 0;
 
@@ -33,10 +34,11 @@ struct Greedy {
 		return library.signup_days + non_scanned_book_count / library.books_per_day;
 	}
 
-	int BookScoreLibrary(int library_idx, int start_day) {
+	int BookScoreLibrary(int library_idx, int start_day, int end_day = -1) {
+		if (end_day == -1) { end_day = in.days; }
 		auto& library = in.libraries[library_idx];
 
-		int days_left = in.days - start_day - library.signup_days;
+		int days_left = end_day - start_day - library.signup_days;
 		int scannable_books = days_left * library.books_per_day;
 
 		int score = 0;
@@ -52,6 +54,28 @@ struct Greedy {
 		return score;
 	}
 
+	int LostBookScore(int library_idx, int start_day_low, int start_day_high) {
+		return BookScoreLibrary(library_idx, start_day_low, in.days - start_day_high + start_day_low);
+	}
+
+	int MinimumLibrarySetupTime(int other_than) {
+		bool old_signed = libraries_signed[other_than];
+		libraries_signed[other_than] = true;
+
+		int min = INT_MAX;
+		for (int i = 0; i < in.libraries.size(); ++i) {
+			bool active = libraries_signed[i];
+			if (active) {
+				continue;
+			}
+			if (in.libraries[i].signup_days < min) {
+				min = in.libraries[i].signup_days;
+			}
+		}
+		libraries_signed[other_than] = old_signed;
+		return min;
+	}
+
 	float SmartScoreLibrary(int library_idx, int start_day) {
 		auto& library = in.libraries[library_idx];
 
@@ -59,10 +83,19 @@ struct Greedy {
 		if (book_score == 0) {
 			return std::numeric_limits<float>::lowest();
 		}
+
+		int lost_book_score = kappa != 0.0 ? LostBookScore(library_idx, start_day, start_day + MinimumLibrarySetupTime(library_idx)) : 0;
+
+
 		int days_left = in.days - start_day;
 		int setup_time = library.signup_days;
 
-		return book_score * (std::pow(double(days_left - lambda * setup_time), power) / double(days_left));
+		double magic = std::pow(
+				double(days_left - lambda * setup_time),
+				power
+			) / double(days_left);
+
+		return book_score * magic - kappa * lost_book_score;
 	}
 
 	std::vector<int> ScanFromLibrary(int library_idx, int start_day) {
@@ -154,6 +187,9 @@ int main(int argc, char** argv) {
 	}
 	if (argc >= 3) {
 		lambda = std::stod(argv[2]);
+	}
+	if (argc >= 4) {
+		kappa = std::stod(argv[3]);
 	}
 
 	print(std::cout, Greedy{parse(std::cin)}.Solve());
